@@ -36,6 +36,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.util.TypedValue;
 import android.view.Display;
@@ -153,10 +154,11 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
 
     @Override
     public View createView(Context context) {
-        logoDrawable = context.getResources().getDrawable(R.drawable.telegram_logo).mutate();
-        logoDrawable.setBounds(0, dp(8.666f), dp(115), dp(35));
-        SpannableStringBuilder ssb = new SpannableStringBuilder(LocaleController.getString(R.string.Page1Title));
-        ssb.setSpan(new ImageSpan(logoDrawable), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        logoDrawable = context.getResources().getDrawable(R.drawable.skygram_icon_monochrome).mutate();
+        final int introLogoSize = dp(26);
+        logoDrawable.setBounds(0, 0, introLogoSize, introLogoSize);
+        SpannableStringBuilder ssb = new SpannableStringBuilder("  " + LocaleController.getString(R.string.AppName));
+        ssb.setSpan(new ImageSpan(logoDrawable, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         titles[0] = ssb;
 
 

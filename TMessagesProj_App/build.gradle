@@ -93,8 +93,8 @@ android {
             jniDebuggable false
             signingConfig signingConfigs.release
             applicationIdSuffix ".beta"
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), '../TMessagesProj/proguard-rules.pro'
             ndk.debugSymbolLevel = 'none'
