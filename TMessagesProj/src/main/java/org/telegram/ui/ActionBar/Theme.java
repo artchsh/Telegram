@@ -17,6 +17,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -7207,7 +7208,78 @@ public class Theme {
         saveOtherThemes(true);
     }
 
+    private static final String[] BUILT_IN_THEME_ASSETS = {"bluebubbles.attheme", "darkblue.attheme", "arctic.attheme", "day.attheme", "night.attheme"};
+
+    private static boolean isBuiltInThemeAsset(String assetName) {
+        if (assetName == null) {
+            return false;
+        }
+        for (String name : BUILT_IN_THEME_ASSETS) {
+            if (name.equals(assetName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Built-in .attheme files are copied from assets into the app's files dir and cached there
+     * forever. The cache is not tied to the app version, so a stale, truncated or outdated copy
+     * (for example left over from a previous install) makes a theme parse only partially: some
+     * colors are applied and everything else silently falls back to the light defaults, which
+     * shows up as black text on a black background in dark themes. Refresh the cache whenever
+     * the app package is updated.
+     */
+    private static void invalidateBuiltInThemeAssetsCacheIfNeeded() {
+        try {
+            final File dir = ApplicationLoader.getFilesDirFixed();
+            final File marker = new File(dir, "builtin_themes_cache.version");
+            long lastUpdateTime = 0;
+            try {
+                PackageInfo info = ApplicationLoader.applicationContext.getPackageManager()
+                        .getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
+                lastUpdateTime = info.lastUpdateTime;
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+            final String current = Long.toString(lastUpdateTime);
+            String cached = null;
+            if (marker.exists()) {
+                try (FileInputStream in = new FileInputStream(marker)) {
+                    byte[] buffer = new byte[(int) Math.min(marker.length(), 64)];
+                    int read = in.read(buffer);
+                    if (read > 0) {
+                        cached = new String(buffer, 0, read).trim();
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
+            if (lastUpdateTime != 0 && !current.equals(cached)) {
+                for (String name : BUILT_IN_THEME_ASSETS) {
+                    File cachedAsset = new File(dir, name);
+                    if (cachedAsset.exists() && !cachedAsset.delete()) {
+                        try (FileOutputStream out = new FileOutputStream(cachedAsset)) {
+                            out.write(new byte[0]);
+                        } catch (Exception ignore) {
+                        }
+                    }
+                }
+                try (FileOutputStream out = new FileOutputStream(marker)) {
+                    out.write(current.getBytes());
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
+        } catch (Throwable e) {
+            FileLog.e(e);
+        }
+    }
+
     public static File getAssetFile(String assetName) {
+        if (isBuiltInThemeAsset(assetName)) {
+            invalidateBuiltInThemeAssetsCacheIfNeeded();
+        }
         File file = new File(ApplicationLoader.getFilesDirFixed(), assetName);
         long size;
         try {
@@ -7218,7 +7290,7 @@ public class Theme {
             size = 0;
             FileLog.e(e);
         }
-        if (!file.exists() || size != 0 && file.length() != size) {
+        if (!file.exists() || file.length() == 0 || size != 0 && file.length() != size) {
             try (InputStream in = ApplicationLoader.applicationContext.getAssets().open(assetName)) {
                 AndroidUtilities.copyFile(in, file);
             } catch (Exception e) {
