@@ -142,6 +142,13 @@ android {
         minSdkVersion 21
         targetSdkVersion 36
 
+        // Own API credentials can be supplied in local.properties (git-ignored):
+        //   telegram.api_id=123456
+        //   telegram.api_hash=0123456789abcdef0123456789abcdef
+        // Using the published defaults below will make Telegram answer API_ID_PUBLISHED_FLOOD.
+        buildConfigField "int", "TELEGRAM_APP_ID", (getProps("telegram.api_id") ?: "4")
+        buildConfigField "String", "TELEGRAM_APP_HASH", "\"" + (getProps("telegram.api_hash") ?: "014b35b6184100b085b0d0572f9b5103") + "\""
+
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
 
         multiDexEnabled true

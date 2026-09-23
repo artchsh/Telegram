@@ -58,6 +58,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.util.LongSparseArray;
 import android.util.Property;
@@ -3567,11 +3568,12 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             } else {
                 statusDrawable = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(null, dp(26));
                 statusDrawable.center = true;
-                logoDrawable = context.getResources().getDrawable(R.drawable.telegram_logo_2).mutate();
-                logoDrawable.setBounds(0, dp(2), logoDrawable.getIntrinsicWidth(), dp(2) + logoDrawable.getIntrinsicHeight());
+                logoDrawable = context.getResources().getDrawable(R.drawable.skygram_icon_monochrome).mutate();
+                final int logoSize = dp(26);
+                logoDrawable.setBounds(0, 0, logoSize, logoSize);
                 logoDrawable.setColorFilter(getThemedColor(Theme.key_telegram_color_dialogsLogo), PorterDuff.Mode.MULTIPLY);
-                SpannableStringBuilder ssb = new SpannableStringBuilder(getString(R.string.AppName));
-                ssb.setSpan(new ImageSpan(logoDrawable), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                SpannableStringBuilder ssb = new SpannableStringBuilder("  " + getString(R.string.AppName));
+                ssb.setSpan(new ImageSpan(logoDrawable, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 actionBar.setTitle(ssb, statusDrawable);
                 updateStatus(UserConfig.getInstance(currentAccount).getCurrentUser(), false);
             }
