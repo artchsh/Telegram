@@ -1,0 +1,7 @@
+# Telegram reads several assets with a byte-level parser and does NOT strip '\r'.
+# With core.autocrlf=true (default on Windows) git rewrites LF to CRLF on checkout,
+# which silently breaks those files, e.g. built-in .attheme themes: every value
+# fails to parse and falls back to 0, so dark themes render text invisible
+# (black on black). Keep these files byte-exact.
+TMessagesProj/src/main/assets/** -text
+TMessagesProj_App/src/main/assets/** -text

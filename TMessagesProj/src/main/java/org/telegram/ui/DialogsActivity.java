@@ -3572,7 +3572,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 final int logoSize = dp(26);
                 logoDrawable.setBounds(0, 0, logoSize, logoSize);
                 logoDrawable.setColorFilter(getThemedColor(Theme.key_telegram_color_dialogsLogo), PorterDuff.Mode.MULTIPLY);
-                SpannableStringBuilder ssb = new SpannableStringBuilder("  " + getString(R.string.AppName));
+                SpannableStringBuilder ssb = new SpannableStringBuilder("  " + BuildVars.APP_NAME);
                 ssb.setSpan(new ImageSpan(logoDrawable, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 actionBar.setTitle(ssb, statusDrawable);
                 updateStatus(UserConfig.getInstance(currentAccount).getCurrentUser(), false);

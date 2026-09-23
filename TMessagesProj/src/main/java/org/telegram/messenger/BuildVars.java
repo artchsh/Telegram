@@ -29,6 +29,10 @@ public class BuildVars {
     public static int APP_ID = BuildConfig.TELEGRAM_APP_ID;
     public static String APP_HASH = BuildConfig.TELEGRAM_APP_HASH;
 
+    // Brand name used in the UI. LocaleController/cloud language packs override R.string.AppName
+    // with "Telegram", so the visible in-app name is taken from here instead.
+    public static final String APP_NAME = "SkyGram";
+
     // SafetyNet key for Google Identity SDK, set it to empty to disable
     public static String SAFETYNET_KEY = "AIzaSyDqt8P-7F7CPCseMkOiVRgb1LY8RN1bvH8";
     public static String PLAYSTORE_APP_URL = "https://play.google.com/store/apps/details?id=org.telegram.messenger";

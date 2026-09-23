@@ -157,7 +157,7 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
         logoDrawable = context.getResources().getDrawable(R.drawable.skygram_icon_monochrome).mutate();
         final int introLogoSize = dp(26);
         logoDrawable.setBounds(0, 0, introLogoSize, introLogoSize);
-        SpannableStringBuilder ssb = new SpannableStringBuilder("  " + LocaleController.getString(R.string.AppName));
+        SpannableStringBuilder ssb = new SpannableStringBuilder("  " + BuildVars.APP_NAME);
         ssb.setSpan(new ImageSpan(logoDrawable, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         titles[0] = ssb;
 
